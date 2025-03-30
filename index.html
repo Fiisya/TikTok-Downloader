@@ -33,11 +33,17 @@
             max-width: 500px;
             text-align: center;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: fadeIn 0.5s forwards;
         }
 
-        .container:hover {
-            transform: translateY(-5px);
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         h1 {
@@ -47,7 +53,7 @@
             letter-spacing: 1px;
         }
 
-        input[type="text"], input[type="password"] {
+        input[type="text"] {
             width: 100%;
             padding: 14px;
             margin-bottom: 15px;
@@ -59,7 +65,7 @@
             transition: all 0.3s ease;
         }
 
-        input[type="text"]:focus, input[type="password"]:focus {
+        input[type="text"]:focus {
             border-color: #004d40;
             background: #ffffff;
             outline: none;
@@ -195,25 +201,7 @@
     </style>
 </head>
 <body>
-    <div class="container" id="signupContainer">
-        <h1>Sign Up</h1>
-        <input type="text" id="newUsername" placeholder="Username" required>
-        <input type="password" id="newPassword" placeholder="Password" required>
-        <button onclick="signup()">Sign Up</button>
-        <p class="error" id="signupError" style="display: none;"></p>
-        <p>Sudah punya akun? <a href="#" onclick="showLogin()">Login di sini</a></p>
-    </div>
-
-    <div class="container hidden" id="loginContainer">
-        <h1>Login</h1>
-        <input type="text" id="username" placeholder="Username" required>
-        <input type="password" id="password" placeholder="Password" required>
-        <button onclick="login()">Login</button>
-        <p class="error" id="loginError" style="display: none;"></p>
-        <p>Belum punya akun? <a href="#" onclick="showSignup()">Daftar di sini</a></p>
-    </div>
-
-    <div class="container hidden" id="downloadContainer">
+    <div class="container" id="downloadContainer">
         <h1>TikTok Video Downloader</h1>
         <div id="inputSection">
             <input type="text" id="videoUrl" placeholder="Masukkan URL TikTok" required>
@@ -230,70 +218,6 @@
     </div>
 
     <script>
-        let currentUser  = null;
-        const users = {}; // Simpan pengguna yang terdaftar
-
-        function signup() {
-            const newUsername = document.getElementById('newUsername').value.trim();
-            const newPassword = document.getElementById('newPassword').value.trim();
-            const signupError = document.getElementById('signupError');
-
-            // Validasi input
-            if (!newUsername || !newPassword) {
-                signupError.innerText = 'Username dan password harus diisi.';
-                signupError.style.display = 'block';
-                return;
-            }
-
-            if (newUsername in users) {
-                signupError.innerText = 'Username sudah terdaftar.';
-                signupError.style.display = 'block';
-            } else {
-                users[newUsername] = newPassword; // Simpan pengguna
-                signupError.style.display = 'none';
-                alert('Pendaftaran berhasil! Silakan login.');
-                showLogin();
-            }
-        }
-
-        function showSignup() {
-            document.getElementById('loginContainer').classList.add('hidden');
-            document.getElementById('signupContainer').classList.remove('hidden');
-        }
-
-        function showLogin() {
-            document.getElementById('signupContainer').classList.add('hidden');
-            document.getElementById('loginContainer').classList.remove('hidden');
-        }
-
-        function login() {
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value.trim();
-            const loginError = document.getElementById('loginError');
-
-            // Validasi input
-            if (!username || !password) {
-                loginError.innerText = 'Username dan password harus diisi.';
-                loginError.style.display = 'block';
-                return;
-            }
-
-            if (username in users && users[username] === password) {
-                currentUser  = username;
-                loginError.style.display = 'none';
-                showDownload();
-            } else {
-                loginError.innerText = 'Username atau password salah.';
-                loginError.style.display = 'block';
-            }
-        }
-
-        function showDownload() {
-            document.getElementById('loginContainer').classList.add('hidden');
-            document.getElementById('signupContainer').classList.add('hidden');
-            document.getElementById('downloadContainer').classList.remove('hidden');
-        }
-
         async function downloadVideo() {
             const videoUrl = document.getElementById('videoUrl').value.trim();
             const resultDiv = document.getElementById('result');
